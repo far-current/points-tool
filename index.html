@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f4f6fb" />
+  <title>积分商业化 · 定价工作台</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#top"><span class="brand-mark">✳</span><span>定价可视化工具</span></a>
+      <div class="nav-caption">功能目录</div>
+      <nav class="side-nav">
+        <a class="nav-link" href="#overview" data-nav="overview"><span>▦</span>经营概览</a>
+        <a class="nav-link active" href="#lever-1" data-nav="lever-1"><span>◈</span>积分与订阅<span class="nav-index">01</span></a>
+        <a class="nav-link" href="#lever-2" data-nav="lever-2"><span>⌘</span>模型倍率<span class="nav-index">02</span></a>
+        <a class="nav-link" href="#lever-3" data-nav="lever-3"><span>✧</span>AIGC 定价<span class="nav-index">03</span></a>
+        <a class="nav-link" href="#lever-4" data-nav="lever-4"><span>⬡</span>智能体拆解<span class="nav-index">04</span></a>
+      </nav>
+    </aside>
+
+    <main class="main" id="top">
+      <header class="topbar"><div class="breadcrumbs">Nova AI <span>/</span> 商业化工作台 <span>/</span> <b>定价控制台</b></div><div class="top-actions"><span class="save-state"><i></i><span id="saveStatus">已保存到本地</span></span><button class="button button-quiet" id="exportBtn">↥ 导出方案</button><button class="button button-quiet" id="exportExcelBtn">▦ 导出 Excel</button><button class="button button-primary" id="resetBtn">恢复默认</button></div></header>
+
+      <div class="page-content">
+        <section class="hero" id="overview">
+          <div><h1>把每一分成本，<span>算清楚。</span></h1></div>
+          <div class="hero-meta"><div class="meta-icon">↗</div><span>方案自动保存</span><small>仅保存在当前浏览器</small></div>
+        </section>
+
+        <section class="summary-grid" aria-label="定价摘要">
+          <article class="summary-card editable-summary"><div class="summary-top"><span>积分汇率</span><span class="summary-icon blue">◎</span></div><div class="summary-value"><strong>1 : <span id="summaryFx">1.20</span></strong><small>显示 / 实际</small></div><div class="summary-foot">平台显示积分 ÷ 用户实际消耗积分</div><label class="summary-edit">汇率 <input id="pointFx" type="number" min="0.01" step="0.01" value="1.2"></label></article>
+          <article class="summary-card editable-summary"><div class="summary-top"><span>积分定价</span><span class="summary-icon violet">◎</span></div><div class="summary-value"><strong>¥1 = <span id="summaryPointsPerYuan">100</span></strong><small>积分</small></div><div class="summary-foot">AIGC 与智能体建议售价的积分换算</div><label class="summary-edit">兑换比例 <input id="pointsPerYuan" type="number" min="0.01" step="1" value="100"></label></article>
+        </section>
+
+        <section class="section-block" id="lever-1">
+          <div class="section-header"><div class="section-title"><h2>积分与订阅</h2></div><div class="section-tools"><button class="button button-outline" data-add="plan">＋ 新增方案</button></div></div>
+          <div class="plan-toolbar"><div class="segmented" id="billingSwitch"><button class="selected" data-billing="month">1个月</button><button data-billing="year">1年</button></div><span class="toolbar-hint">年付折扣按对应方案的月付金额 × 12 计算</span></div>
+          <div class="plan-grid" id="planGrid"></div>
+          <div class="panel add-on-panel"><div class="add-on-head"><div><h3>按需购买积分</h3></div><button class="button button-outline" data-add="topup">＋ 添加加量包</button></div><div class="topup-grid" id="topupGrid"></div></div>
+        </section>
+
+        <section class="section-block" id="lever-2">
+          <div class="section-header"><div class="section-title"><h2>模型倍率</h2></div><div class="section-tools"><button class="button button-outline" data-add="model">＋ 添加模型</button></div></div>
+          <div class="panel table-panel"><div class="table-meta"><div class="table-caption"><span class="status-dot"></span>Token 价格与消耗效率</div><div class="formula-chip">最终倍率 = 采购倍率 S × Token 倍率 T × 积分汇率</div></div><div class="table-scroll"><table class="model-table"><colgroup><col class="col-series"><col class="col-model-name"><col class="col-quote"><col class="col-token-price"><col class="col-token-price"><col class="col-token-price"><col class="col-multiplier"><col class="col-multiplier"><col class="col-result"><col class="col-margin"><col class="col-speed"><col class="col-delete"></colgroup><thead><tr><th>模型系列</th><th class="model-sticky-head">模型名称</th><th>采购报价</th><th>官方输入价 <small>$ / M</small></th><th>官方输出价 <small>$ / M</small></th><th>缓存读价 <small>$ / M</small></th><th>中位供应成本倍率 <small>S</small></th><th>Token 倍率 <small>T</small></th><th>含汇率倍率</th><th>毛利率</th><th>归一化速度</th><th></th></tr></thead><tbody id="modelRows"></tbody></table></div></div>
+        </section>
+
+        <section class="section-block" id="lever-3">
+          <div class="section-header"><div class="section-title"><h2>AIGC 定价</h2></div><div class="section-tools"><button class="button button-outline" data-add="aigc">＋ 添加模型</button></div></div>
+          <div class="module-tabs" id="moduleTabs"><button class="module-tab active" data-module="image"><span>▧</span>图片 <b id="imageCount">1</b></button><button class="module-tab" data-module="video"><span>▹</span>视频 <b id="videoCount">1</b></button><button class="module-tab" data-module="music"><span>♫</span>音乐 <b id="musicCount">1</b></button><button class="module-tab" data-module="text"><span>≋</span>文本 <b id="textCount">1</b></button></div>
+          <div class="aigc-grid" id="aigcGrid"></div>
+        </section>
+
+        <section class="section-block" id="lever-4">
+          <div class="section-header"><div class="section-title"><h2>智能体拆解</h2></div><div class="section-tools"><button class="button button-primary" data-add="agent">＋ 新增智能体</button></div></div>
+          <div class="agent-list" id="agentList"></div>
+        </section>
+
+        <footer class="page-footer"><span>Northstar Pricing Studio <i>·</i> 定价方案仅保存在当前浏览器</span><span>积分汇率与积分定价比例已纳入售价和毛利计算 <b>✓</b></span></footer>
+      </div>
+    </main>
+  </div>
+  <div class="toast" id="toast" aria-live="polite" aria-atomic="false"></div>
+  <script src="app.js"></script>
+</body>
+</html>
