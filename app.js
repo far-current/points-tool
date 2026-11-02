@@ -27,7 +27,7 @@ const modelRows = [
   ['MiniMax系列','MiniMax-M2.5','1',1,2.1,.2877,1.1497,.029,.7524,.18],
   ['Qwen系列','qwen3.7-flash','1',1,2.2,.03,.13,.006,.7636,.03],
   ['其他','auto','1',1,2,2.5,15,.25,.74,2.02]
-].map((row, index) => ({ id:`model-${index+1}`, series:row[0], name:row[1], quote:row[2], procurement:row[3], token:row[4], baseSt:row[3]*row[4], input:row[5], output:row[6], cache:row[7], baseMargin:row[8], sourceSpeed:row[9] }));
+].map((row, index) => ({ id:`model-${index+1}`, series:row[0], name:row[1], quote:'1', procurement:1, token:1, baseSt:1, input:row[5], output:row[6], cache:row[7], baseMargin:row[8], sourceSpeed:row[9] }));
 
 const aigcRows = [
   ['image','Seedream 4.5',[['2K、4K',.27]]],
@@ -42,10 +42,10 @@ const aigcRows = [
   ['video','Kling V3 Omni',[['720P；无参考视频',.9],['1080P；无参考视频',1.2],['720P；有参考视频',.9],['1080P；有参考视频',1.2],['720P；无声；无参考视频',.6],['1080P；无声；无参考视频',.8]]],
   ['video','Kling V3',[['720P',.9],['1080P',1.2],['720P；无声',.6],['1080P；无声',.8]]],
   ['music','suno V5.5',[['默认规格',.42]]]
-].map(([module,name,conditions],mi)=>({id:`aigc-${mi+1}`,module,name,conditions:conditions.map(([spec,cost],ci)=>({id:`aigc-${mi+1}-c${ci+1}`,spec,cost:typeof cost==='number'?cost:'',priceNote:typeof cost==='string'?cost:'',profit:1,marketPrice:''}))}));
+].map(([module,name,conditions],mi)=>({id:`aigc-${mi+1}`,module,name,conditions:conditions.map(([spec,cost],ci)=>({id:`aigc-${mi+1}-c${ci+1}`,spec,cost:'',priceNote:typeof cost==='string'?cost:'',profit:1,marketPrice:''}))}));
 
 const seed = {
-  fx: 1.7, pointsPerYuan: 25, billing: 'month', activeModule: 'image',
+  fx: 1, pointsPerYuan: 25, billing: 'month', activeModule: 'image',
   plans: [
     { id:'p1', name:'普通版', desc:'适合个人日常任务与稳定的积分补充。', price:98, listPrice:1200, monthDiscount:0, annualDiscount:20, basePoints:2500, giftRate:30, features:['全部模型可选','同时运行 1 个任务'] },
     { id:'p2', name:'高级版', desc:'适合复杂任务、密集创作与多任务协同。', price:198, listPrice:2400, monthDiscount:0, annualDiscount:20, basePoints:5000, giftRate:30, features:['全部模型可选','同时运行 3 个任务','高峰期优先保障'] }
@@ -55,15 +55,11 @@ const seed = {
   ],
   models: modelRows,
   aigc: aigcRows,
-  agents: [
-    { id:'g1', name:'日报智能体', steps:[
-      { id:'s11', name:'分析个人报告', limit:'附件 20MB × 5', cost:.25, profit:2.5, unit:'篇报告' },
-      { id:'s12', name:'汇总行业报告', limit:'行业简报、知识库、个人报告', cost:.013, profit:2.5, unit:'条汇总' },
-      { id:'s13', name:'采集行业动态', limit:'24 次 / 天 · 20 条 / 次', cost:.7, profit:3.6, unit:'次采集' },
-      { id:'s14', name:'存入知识库', limit:'附件 × 5', cost:.01, profit:2.5, unit:'条知识' }
-    ] },
-    
-  ]
+  agents: [{id:'video-agent',name:'视频创作智能体',steps:[
+    {id:'video-step-1',name:'脚本构思与分镜规划',limit:'按视频项目计费',cost:'',profit:'',unit:'个项目'},
+    {id:'video-step-2',name:'素材生成与镜头制作',limit:'按生成片段计费',cost:'',profit:'',unit:'个片段'},
+    {id:'video-step-3',name:'剪辑合成与成片输出',limit:'按成片计费',cost:'',profit:'',unit:'条成片'}
+  ]}]
 };
 
 const $ = (selector, root=document) => root.querySelector(selector);
